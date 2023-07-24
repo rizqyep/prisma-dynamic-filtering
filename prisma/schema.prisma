@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum BlogCategory {
+  BACKEND
+  FRONTEND
+  MOBILE
+}
+
+model Blogs {
+  id        String       @id @default(uuid())
+  title     String
+  content   String
+  category  BlogCategory
+  writer    User         @relation(fields: [writerId], references: [id])
+  writerId  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model User {
+  id       String  @id @default(uuid())
+  username String  @unique
+  fullName String
+  blogs    Blogs[]
+}
